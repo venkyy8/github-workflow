@@ -50,7 +50,9 @@ jobs:
       run: |
         # Authenticate with your custom token (PASSWORD1_TOKEN) for private repo access
         git remote set-url origin https://x-access-token:${{ secrets.PASSWORD1_TOKEN }}@github.com/venkyy8/demo.git
-        git push -u origin $NEW_BRANCH  # Push the branch and set the upstream branch
+        
+        # Ensure the branch is pushed and the upstream is set
+        git push --set-upstream origin $NEW_BRANCH  # Explicitly push and set the upstream
 
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v4
