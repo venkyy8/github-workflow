@@ -46,8 +46,18 @@ jobs:
       run: |
         git remote -v  # Confirm that 'origin' is correctly set
 
-    - name: Push the changes to the new branch
+    - name: Authenticate and Push the changes to the new branch
       run: |
         # Authenticate with your custom token (PASSWORD1_TOKEN) for private repo access
         git remote set-url origin https://x-access-token:${{ secrets.PASSWORD1_TOKEN }}@github.com/venkyy8/demo.git
-        git push --set-upstream origin $NEW_BRANCH  # Push the branch and set upstream
+        git push -u origin $NEW_BRANCH  # Push the branch and set the upstream branch
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v4
+      with:
+        token: ${{ secrets.PASSWORD1_TOKEN }}
+        base: main
+        head: $NEW_BRANCH
+        title: "Automated PR: Modify sample.txt"
+        body: "This PR contains modifications made by GitHub Actions."
+        draft: false
