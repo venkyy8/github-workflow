@@ -58,5 +58,5 @@ jobs:
                      --body "This PR includes changes made to sample.txt through GitHub Actions." \
                      --base main \
                      --head $NEW_BRANCH \
-                     --assignee ${{ github.actor }} \
+                     --assignee "${{ github.actor }}" \  # Quote the assignee value
                      --label "enhancement"
