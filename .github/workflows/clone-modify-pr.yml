@@ -54,21 +54,20 @@ jobs:
       run: |
         gh auth login --with-token <<< "${{ secrets.PASSWORD1_TOKEN }}"  # Use your custom token for authentication
     
+    - name: Debug branch name
+      run: |
+        echo "New branch name: $NEW_BRANCH"
+    
     - name: Create Pull Request
       run: |
         # Create the pull request with the specified title and description
         PR_URL=$(gh pr create --title "1st-PR" \
                                --body "@yvsr please review and merge" \
                                --base main \
-                               --head $NEW_BRANCH)
+                               --head "$NEW_BRANCH")  # Ensure the branch name is quoted
         
         # Print the PR URL for debugging
         echo "Pull Request URL: $PR_URL"
         
         # Verify the PR is visible
         gh pr view --web  # Open the PR in the web browser for verification
-    
-    - name: Merge Pull Request
-      run: |
-        # Merge the PR into the main branch
-        gh pr merge $NEW_BRANCH --merge --delete-branch
