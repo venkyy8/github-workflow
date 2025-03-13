@@ -56,11 +56,15 @@ jobs:
       run: |
         echo "GitHub Actor: ${{ github.actor }}"
     
+    - name: Debug PR Command
+      run: |
+        echo "gh pr create --title 'Add new modifications' --body 'This PR includes changes made to sample.txt through GitHub Actions.' --base main --head $NEW_BRANCH --assignee '@me' --label 'enhancement'"
+    
     - name: Create Pull Request
       run: |
         gh pr create --title "Add new modifications" \
                      --body "This PR includes changes made to sample.txt through GitHub Actions." \
                      --base main \
                      --head $NEW_BRANCH \
-                     --assignee "@me" \  # Assign to the user who triggered the workflow
+                     --assignee "@me" \
                      --label "enhancement"
