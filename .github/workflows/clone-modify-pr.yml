@@ -19,6 +19,13 @@ jobs:
       run: |
         git config --global user.name "venky"
         git config --global user.email "venkyy82@gmail.com"
+        git config --global push.autoSetupRemote true  # Automatically set upstream on first push
+    
+    - name: Debug repository state
+      run: |
+        git status
+        git branch -a
+        git remote -v
     
     - name: Create a new branch
       run: |
@@ -35,7 +42,7 @@ jobs:
     - name: Push the changes to the new branch
       run: |
         git push --set-upstream origin $NEW_BRANCH  # Push and set the upstream in one step
-
+    
     - name: Install GitHub CLI
       run: |
         sudo apt-get install gh  # Install GitHub CLI tool
@@ -52,4 +59,3 @@ jobs:
                      --head $NEW_BRANCH \
                      --assignee ${{ github.actor }} \
                      --label "enhancement"
-                     
