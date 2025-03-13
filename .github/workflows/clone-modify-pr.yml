@@ -44,4 +44,5 @@ jobs:
     
     - name: Push the changes to the new branch
       run: |
-        git push --set-upstream origin $NEW_BRANCH
+        git push origin $NEW_BRANCH  # Explicitly push to origin
+        git push --set-upstream origin $NEW_BRANCH  # Explicitly set upstream branch
