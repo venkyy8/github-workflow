@@ -43,10 +43,8 @@ jobs:
         git push -u origin $NEW_BRANCH  # The -u flag automatically sets the upstream branch
     
     - name: Set up GitHub CLI
-      uses: cli/cli-action@v2  # Official GitHub CLI action
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-    
+      uses: github-actions/gh-cli-action@v2  # Correct GitHub CLI action from GitHub
+
     - name: Create Pull Request
       run: |
         gh pr create --title "Add new modifications" \
