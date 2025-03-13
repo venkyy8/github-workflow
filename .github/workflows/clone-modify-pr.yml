@@ -56,12 +56,11 @@ jobs:
     
     - name: Create Pull Request
       run: |
-        # Create the pull request without the --assignee flag
-        PR_URL=$(gh pr create --title "Add new modifications" \
-                               --body "This PR includes changes made to sample.txt through GitHub Actions." \
+        # Create the pull request with the specified title and description
+        PR_URL=$(gh pr create --title "1st-PR" \
+                               --body "@yvsr please review and merge" \
                                --base main \
-                               --head $NEW_BRANCH \
-                               --label "enhancement")
+                               --head $NEW_BRANCH)
         
         # Print the PR URL for debugging
         echo "Pull Request URL: $PR_URL"
