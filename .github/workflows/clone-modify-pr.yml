@@ -1,4 +1,4 @@
-name: Clone, Modify, and Push
+name: Clone, Modify, and Create PR
 
 on:
   push:
@@ -27,16 +27,10 @@ jobs:
     
     - name: Create a new branch
       run: |
-        # Generate new branch name (simple, no upstream required)
         NEW_BRANCH="feature/modify-file-$(date +'%Y%m%d%H%M%S')"
         git checkout -b $NEW_BRANCH
         echo "New branch created: $NEW_BRANCH"
     
-    - name: Check if the sample.txt file exists
-      run: |
-        echo "Checking for sample.txt"
-        if [ ! -f sample.txt ]; then echo "sample.txt does not exist"; exit 1; fi
-
     - name: Modify the file
       run: |
         echo "This is a modification made by GitHub Actions" >> sample.txt
@@ -45,5 +39,19 @@ jobs:
     
     - name: Push the changes to the new branch
       run: |
-        # Push the new branch directly without the need to update the remote URL
-        git push origin $NEW_BRANCH  # Push the new branch directly
+        # Push the new branch to remote once
+        git push -u origin $NEW_BRANCH  # The -u flag automatically sets the upstream branch
+    
+    - name: Set up GitHub CLI
+      uses: peter-evans/gh-action@v2
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Create Pull Request
+      run: |
+        gh pr create --title "Add new modifications" \
+                     --body "This PR includes changes made to sample.txt through GitHub Actions." \
+                     --base main \
+                     --head $NEW_BRANCH \
+                     --assignee ${{ github.actor }} \
+                     --label "enhancement"
