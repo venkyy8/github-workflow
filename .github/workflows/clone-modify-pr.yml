@@ -34,7 +34,7 @@ jobs:
     
     - name: Push the changes to the new branch
       run: |
-        git push --set-upstream origin $NEW_BRANCH  # Push and set the upstream
+        git push --set-upstream origin $NEW_BRANCH  # Push and set the upstream for new branch
 
     - name: Install GitHub CLI
       run: |
