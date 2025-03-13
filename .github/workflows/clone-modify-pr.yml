@@ -24,6 +24,10 @@ jobs:
         git checkout -b $NEW_BRANCH
         echo "New branch created: $NEW_BRANCH"
     
+    - name: Check if the demo/sample.txt file exists
+      run: |
+        if [ ! -f demo/sample.txt ]; then echo "demo/sample.txt does not exist"; exit 1; fi
+
     - name: Modify a file
       run: |
         echo "This is a modification made by GitHub Actions" >> demo/sample.txt
