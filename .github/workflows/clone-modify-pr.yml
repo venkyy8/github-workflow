@@ -54,18 +54,13 @@ jobs:
       run: |
         gh auth login --with-token <<< "${{ secrets.PASSWORD1_TOKEN }}"  # Use your custom token for authentication
     
-    - name: Debug GitHub Actor
-      run: |
-        echo "GitHub Actor: ${{ github.actor }}"
-    
     - name: Create Pull Request
       run: |
-        # Create the pull request and capture the output
+        # Create the pull request without the --assignee flag
         PR_URL=$(gh pr create --title "Add new modifications" \
                                --body "This PR includes changes made to sample.txt through GitHub Actions." \
                                --base main \
                                --head $NEW_BRANCH \
-                               --assignee "${{ github.actor }}" \
                                --label "enhancement")
         
         # Print the PR URL for debugging
