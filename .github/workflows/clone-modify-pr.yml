@@ -13,8 +13,7 @@ jobs:
     - name: Checkout the repository
       uses: actions/checkout@v3
       with:
-        # Ensure we checkout the latest main branch
-        ref: main
+        ref: main  # Ensure we checkout the latest main branch
     
     - name: Set up Git configuration
       run: |
@@ -24,7 +23,7 @@ jobs:
     - name: List repository files for debugging
       run: |
         echo "Listing files in the repository:"
-        ls -R  # Recursively list files to inspect the structure
+        ls -al  # List all files in the root directory for debugging
     
     - name: Create a new branch
       run: |
@@ -32,16 +31,16 @@ jobs:
         git checkout -b $NEW_BRANCH
         echo "New branch created: $NEW_BRANCH"
     
-    - name: Check if the demo/sample.txt file exists
+    - name: Check if the sample.txt file exists
       run: |
-        echo "Checking for demo/sample.txt"
-        if [ ! -f demo/sample.txt ]; then echo "demo/sample.txt does not exist"; exit 1; fi
+        echo "Checking for sample.txt"
+        if [ ! -f sample.txt ]; then echo "sample.txt does not exist"; exit 1; fi
 
-    - name: Modify a file
+    - name: Modify the file
       run: |
-        echo "This is a modification made by GitHub Actions" >> demo/sample.txt
-        git add demo/sample.txt
-        git commit -m "Modified demo/sample.txt"
+        echo "This is a modification made by GitHub Actions" >> sample.txt
+        git add sample.txt
+        git commit -m "Modified sample.txt"
     
     - name: Push the changes to the new branch
       run: |
