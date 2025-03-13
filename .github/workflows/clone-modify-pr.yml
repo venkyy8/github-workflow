@@ -46,7 +46,9 @@ jobs:
     
     - name: Install GitHub CLI
       run: |
-        sudo apt-get install gh  # Install GitHub CLI tool
+        sudo apt-get update
+        sudo apt-get install -y gh
+        gh --version  # Print the version for debugging
     
     - name: Authenticate GitHub CLI
       run: |
@@ -58,7 +60,7 @@ jobs:
     
     - name: Debug PR Command
       run: |
-        echo "gh pr create --title 'Add new modifications' --body 'This PR includes changes made to sample.txt through GitHub Actions.' --base main --head $NEW_BRANCH --assignee '@me' --label 'enhancement'"
+        echo "gh pr create --title 'Add new modifications' --body 'This PR includes changes made to sample.txt through GitHub Actions.' --base main --head $NEW_BRANCH --assignee '${{ github.actor }}' --label 'enhancement'"
     
     - name: Create Pull Request
       run: |
@@ -66,5 +68,5 @@ jobs:
                      --body "This PR includes changes made to sample.txt through GitHub Actions." \
                      --base main \
                      --head $NEW_BRANCH \
-                     --assignee "@me" \
+                     --assignee "${{ github.actor }}" \
                      --label "enhancement"
