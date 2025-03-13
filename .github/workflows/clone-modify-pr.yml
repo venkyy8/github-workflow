@@ -48,4 +48,6 @@ jobs:
 
     - name: Push the changes to the new branch
       run: |
+        # Authenticate with your custom token (PASSWORD1_TOKEN) for private repo access
+        git remote set-url origin https://x-access-token:${{ secrets.PASSWORD1_TOKEN }}@github.com/venkyy8/demo.git
         git push --set-upstream origin $NEW_BRANCH  # Push the branch and set upstream
