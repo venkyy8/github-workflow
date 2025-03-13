@@ -68,6 +68,3 @@ jobs:
         
         # Print the PR URL for debugging
         echo "Pull Request URL: $PR_URL"
-        
-        # Verify the PR is visible
-        gh pr view --web  # Open the PR in the web browser for verification
