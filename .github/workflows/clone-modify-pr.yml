@@ -1,0 +1,45 @@
+name: Clone, Modify, and Create PR
+
+on:
+  push:
+    branches:
+      - main  # Trigger this workflow on push to the main branch
+
+jobs:
+  clone_and_modify:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout the repository
+      uses: actions/checkout@v3
+    
+    - name: Set up Git configuration
+      run: |
+        git config --global user.name "github-actions"
+        git config --global user.email "github-actions@github.com"
+    
+    - name: Create a new branch
+      run: |
+        NEW_BRANCH="feature/modify-file-$(date +'%Y%m%d%H%M%S')"
+        git checkout -b $NEW_BRANCH
+        echo "New branch created: $NEW_BRANCH"
+    
+    - name: Modify a file
+      run: |
+        echo "This is a modification made by GitHub Actions" >> path/to/your/file.txt
+        git add path/to/your/file.txt
+        git commit -m "Modified file.txt"
+    
+    - name: Push the changes to the new branch
+      run: |
+        git push origin $NEW_BRANCH
+    
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        base: main
+        head: $NEW_BRANCH
+        title: "Automated PR: Modify file"
+        body: "This PR contains modifications made by GitHub Actions."
+        draft: false
