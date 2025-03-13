@@ -67,3 +67,8 @@ jobs:
         
         # Verify the PR is visible
         gh pr view --web  # Open the PR in the web browser for verification
+    
+    - name: Merge Pull Request
+      run: |
+        # Merge the PR into the main branch
+        gh pr merge $NEW_BRANCH --merge --delete-branch
