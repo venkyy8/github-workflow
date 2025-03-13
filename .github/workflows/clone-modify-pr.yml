@@ -1,4 +1,4 @@
-name: Clone, Modify, and Create PR
+name: Clone, Modify, and Push
 
 on:
   push:
@@ -27,6 +27,7 @@ jobs:
     
     - name: Create a new branch
       run: |
+        # Generate new branch name (simple, no upstream required)
         NEW_BRANCH="feature/modify-file-$(date +'%Y%m%d%H%M%S')"
         git checkout -b $NEW_BRANCH
         echo "New branch created: $NEW_BRANCH"
@@ -42,24 +43,7 @@ jobs:
         git add sample.txt
         git commit -m "Modified sample.txt"
     
-    - name: Check remotes
+    - name: Push the changes to the new branch
       run: |
-        git remote -v  # Confirm that 'origin' is correctly set
-
-    - name: Authenticate and Push the changes to the new branch
-      run: |
-        # Authenticate with your custom token (PASSWORD1_TOKEN) for private repo access
-        git remote set-url origin https://x-access-token:${{ secrets.PASSWORD1_TOKEN }}@github.com/venkyy8/demo.git
-        
-        # Ensure the branch is pushed and the upstream is set
-        git push --set-upstream origin $NEW_BRANCH  # Explicitly push and set the upstream
-
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v4
-      with:
-        token: ${{ secrets.PASSWORD1_TOKEN }}
-        base: main
-        head: $NEW_BRANCH
-        title: "Automated PR: Modify sample.txt"
-        body: "This PR contains modifications made by GitHub Actions."
-        draft: false
+        # Push the changes to the remote repository (no upstream tracking needed)
+        git push origin $NEW_BRANCH  # Push the new branch directly
