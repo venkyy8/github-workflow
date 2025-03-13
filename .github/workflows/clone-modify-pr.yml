@@ -58,15 +58,18 @@ jobs:
       run: |
         echo "GitHub Actor: ${{ github.actor }}"
     
-    - name: Debug PR Command
-      run: |
-        echo "gh pr create --title 'Add new modifications' --body 'This PR includes changes made to sample.txt through GitHub Actions.' --base main --head $NEW_BRANCH --assignee '${{ github.actor }}' --label 'enhancement'"
-    
     - name: Create Pull Request
       run: |
-        gh pr create --title "Add new modifications" \
-                     --body "This PR includes changes made to sample.txt through GitHub Actions." \
-                     --base main \
-                     --head $NEW_BRANCH \
-                     --assignee "${{ github.actor }}" \
-                     --label "enhancement"
+        # Create the pull request and capture the output
+        PR_URL=$(gh pr create --title "Add new modifications" \
+                               --body "This PR includes changes made to sample.txt through GitHub Actions." \
+                               --base main \
+                               --head $NEW_BRANCH \
+                               --assignee "${{ github.actor }}" \
+                               --label "enhancement")
+        
+        # Print the PR URL for debugging
+        echo "Pull Request URL: $PR_URL"
+        
+        # Verify the PR is visible
+        gh pr view --web  # Open the PR in the web browser for verification
