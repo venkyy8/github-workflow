@@ -5,7 +5,6 @@ on:
     branches:
       - main  # Trigger this workflow on push to the main branch
 
-
 jobs:
   clone_and_modify:
     runs-on: ubuntu-latest
@@ -15,6 +14,7 @@ jobs:
       uses: actions/checkout@v3
       with:
         ref: main  # Ensure we checkout the latest main branch
+        token: ${{ secrets.PASSWORD1_TOKEN }}  # Use your custom token for authentication
     
     - name: Set up Git configuration
       run: |
@@ -50,7 +50,7 @@ jobs:
     
     - name: Authenticate GitHub CLI
       run: |
-        gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"  # Login using the GitHub token
+        gh auth login --with-token <<< "${{ secrets.PASSWORD1_TOKEN }}"  # Use your custom token for authentication
     
     - name: Create Pull Request
       run: |
@@ -60,4 +60,3 @@ jobs:
                      --head $NEW_BRANCH \
                      --assignee ${{ github.actor }} \
                      --label "enhancement"
-                     
