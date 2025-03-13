@@ -12,11 +12,19 @@ jobs:
     steps:
     - name: Checkout the repository
       uses: actions/checkout@v3
+      with:
+        # Ensure we checkout the latest main branch
+        ref: main
     
     - name: Set up Git configuration
       run: |
         git config --global user.name "venky"
         git config --global user.email "venkyy82@gmail.com"
+    
+    - name: List repository files for debugging
+      run: |
+        echo "Listing files in the repository:"
+        ls -R  # Recursively list files to inspect the structure
     
     - name: Create a new branch
       run: |
@@ -26,6 +34,7 @@ jobs:
     
     - name: Check if the demo/sample.txt file exists
       run: |
+        echo "Checking for demo/sample.txt"
         if [ ! -f demo/sample.txt ]; then echo "demo/sample.txt does not exist"; exit 1; fi
 
     - name: Modify a file
