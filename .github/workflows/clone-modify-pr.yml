@@ -20,11 +20,6 @@ jobs:
         git config --global user.name "venky"
         git config --global user.email "venkyy82@gmail.com"
     
-    - name: List repository files for debugging
-      run: |
-        echo "Listing files in the repository:"
-        ls -al  # List all files in the root directory for debugging
-    
     - name: Create a new branch
       run: |
         NEW_BRANCH="feature/modify-file-$(date +'%Y%m%d%H%M%S')"
@@ -39,12 +34,12 @@ jobs:
     
     - name: Push the changes to the new branch
       run: |
-        # Push the new branch and set upstream at the same time
-        git push -u origin $NEW_BRANCH  # Push and track the remote branch
-    
+        # Push the new branch to remote and set upstream tracking
+        git push --set-upstream origin $NEW_BRANCH  # Explicitly set upstream
+
     - name: Install GitHub CLI
       run: |
-        sudo apt-get install gh  # Install the GitHub CLI tool
+        sudo apt-get install gh  # Install GitHub CLI tool
     
     - name: Authenticate GitHub CLI
       run: |
