@@ -43,7 +43,7 @@ jobs:
         git push -u origin $NEW_BRANCH  # The -u flag automatically sets the upstream branch
     
     - name: Set up GitHub CLI
-      uses: peter-evans/gh-action@v2
+      uses: cli/cli-action@v2  # Official GitHub CLI action
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
     
