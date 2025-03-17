@@ -54,6 +54,10 @@ jobs:
         PR_URL=$(gh pr create --title "1st-PR" \
                                --body "@yvsr please review and merge" \
                                --base main \
-                               --head "$NEW_BRANCH"  # Ensure the branch name is quoted \
-                               --reviewer kasirao750)  # Add the reviewer to the PR
+                               --head "$NEW_BRANCH")  # Ensure the branch name is quoted 
+                               
+    - name: Add Reviewer to the PR
+      run: |
+        # Add the reviewer to the pull request after it's created
+        gh pr edit $PR_URL --add-reviewer kasirao750
 
