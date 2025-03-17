@@ -24,7 +24,7 @@ jobs:
     
     - name: Create a new branch
       run: |
-        NEW_BRANCH="$(date +'%Y%m%d')"
+        NEW_BRANCH="$(date +'%d%m%y')"
         git checkout -b $NEW_BRANCH
         echo "New branch created: $NEW_BRANCH"
     
