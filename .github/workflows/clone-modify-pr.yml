@@ -38,11 +38,11 @@ jobs:
       run: |
         git push --set-upstream origin $NEW_BRANCH  # Push and set the upstream in one step
     
-    - name: Install GitHub CLI
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y gh
-        gh --version  # Print the version for debugging
+    # - name: Install GitHub CLI
+    #   run: |
+    #     sudo apt-get update
+    #     sudo apt-get install -y gh
+    #     gh --version  # Print the version for debugging
     
     - name: Authenticate GitHub CLI
       run: |
