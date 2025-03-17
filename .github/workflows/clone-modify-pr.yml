@@ -16,11 +16,11 @@ jobs:
         ref: main  # Ensure we checkout the latest main branch
         token: ${{ secrets.PASSWORD1_TOKEN }}  # Use your custom token for authentication
     
-    - name: Set up Git configuration
-      run: |
-        git config --global user.name "venky"
-        git config --global user.email "venkyy82@gmail.com"
-        git config --global push.autoSetupRemote true  # Automatically set upstream on first push
+    # - name: Set up Git configuration
+    #   run: |
+    #     git config --global user.name "venky"
+    #     git config --global user.email "venkyy82@gmail.com"
+    #     git config --global push.autoSetupRemote true  # Automatically set upstream on first push
     
     - name: Create a new branch
       run: |
