@@ -26,8 +26,9 @@ jobs:
           WORKDIR /app
           RUN apt-get update && apt-get install -y git
 
-          # Configure git to use the token for authentication
-          RUN git config --global url."https://${GITHUB_USER}:${PASSWORD1_TOKEN}@github.com/".insteadOf "https://github.com/"
+          # Directly configure the GitHub token-based authentication for Git
+          RUN git config --global credential.helper store
+          RUN echo "https://${GITHUB_USER}:${PASSWORD1_TOKEN}@github.com" > ~/.git-credentials
 
           # Clone repository
           RUN git clone https://github.com/venkyy8/amd-yvsr.git /app/repository
