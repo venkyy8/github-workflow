@@ -21,6 +21,8 @@ jobs:
         run: |
           cat <<EOF > Dockerfile
           FROM ubuntu:20.04
+          ARG GITHUB_USER
+          ARG PASSWORD1_TOKEN
           WORKDIR /app
           RUN apt-get update && apt-get install -y git
 
@@ -35,18 +37,15 @@ jobs:
       - name: Set up Docker
         uses: docker/setup-buildx-action@v2
 
-      # Step 4: Build the Docker image
+      # Step 4: Build the Docker image with build arguments for authentication
       - name: Build Docker Image
         run: |
-          docker build -t my-container .
+          docker build --build-arg GITHUB_USER=venkyy8 --build-arg PASSWORD1_TOKEN=${{ secrets.PASSWORD1_TOKEN }} -t my-container .
 
-      # Step 5: Run the Docker container, passing environment variables for authentication
+      # Step 5: Run the Docker container
       - name: Run Docker Container
         run: |
-          docker run --name my-container-instance -d \
-            -e GITHUB_USER=venkyy8 \
-            -e PASSWORD1_TOKEN=${{ secrets.PASSWORD1_TOKEN }} \
-            my-container
+          docker run --name my-container-instance -d my-container
 
       # Step 6: Clean up: Stop and remove the container
       - name: Clean up
