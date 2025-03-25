@@ -1,4 +1,4 @@
-name: Clone Repo Inside Docker
+name: Clone Repo, Modify File and Push Changes
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main  # Adjust to your branch if needed
 
 jobs:
-  clone-repo:
+  clone-modify-push:
     runs-on: ubuntu-latest
     steps:
       # Step 1: Set up the GitHub username and token directly in the script
@@ -25,13 +25,23 @@ jobs:
           WORKDIR /app
           RUN apt-get update && apt-get install -y git
 
-          # Directly configure the GitHub token-based authentication for Git
+          # Configure the GitHub token-based authentication for Git
           RUN git config --global credential.helper store
           RUN echo "https://${GITHUB_USER}:${PASSWORD1_TOKEN}@github.com" > ~/.git-credentials
 
           # Clone repository
           RUN git clone https://github.com/venkyy8/amd-yvsr.git /app/repository
-          RUN ls -al /app/repository
+          WORKDIR /app/repository
+
+          # Modify the sample.txt file
+          RUN echo "New data added to sample.txt" >> sample.txt
+
+          # Commit and push changes to the repository
+          RUN git config --global user.name "GitHub Actions"
+          RUN git config --global user.email "actions@github.com"
+          RUN git add sample.txt
+          RUN git commit -m "Updated sample.txt with new data"
+          RUN git push https://${GITHUB_USER}:${PASSWORD1_TOKEN}@github.com/venkyy8/amd-yvsr.git
 
           CMD ["bash"]
           EOF
