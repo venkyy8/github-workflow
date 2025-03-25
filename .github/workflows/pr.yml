@@ -34,17 +34,17 @@ jobs:
           WORKDIR /app/repository
 
           # Create a new branch
-          RUN git checkout -b new-branch
+          RUN git checkout -b new-branch1
 
           # Modify the sample.txt file
-          RUN echo "New data added to sample.txt" >> sample.txt
+          RUN echo "New data added tttt" >> sample.txt
 
           # Commit and push changes to the new branch
           RUN git config --global user.name "GitHub Actions"
           RUN git config --global user.email "actions@github.com"
           RUN git add sample.txt
           RUN git commit -m "Updated sample.txt with new data"
-          RUN git push --set-upstream origin new-branch
+          RUN git push --set-upstream origin new-branch1
 
           CMD ["bash"]
           EOF
