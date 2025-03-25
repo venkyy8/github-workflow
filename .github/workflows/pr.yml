@@ -9,12 +9,11 @@ jobs:
   clone-repo:
     runs-on: ubuntu-latest
     steps:
-      # Step 1: Set up environment variables for Git authentication
+      # Step 1: Set up the GitHub username and token directly in the script
       - name: Set up environment variables for Git authentication
         run: |
           echo "GITHUB_USER=venkyy8" >> $GITHUB_ENV
-        env:
-          PASSWORD1_TOKEN: ${{ secrets.PASSWORD1_TOKEN }}
+          echo "PASSWORD1_TOKEN=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" >> $GITHUB_ENV
 
       # Step 2: Create Dockerfile
       - name: Create Dockerfile
@@ -44,7 +43,7 @@ jobs:
       # Step 4: Build the Docker image with build arguments for authentication
       - name: Build Docker Image
         run: |
-          docker build --build-arg GITHUB_USER=venkyy8 --build-arg PASSWORD1_TOKEN=${{ secrets.PASSWORD1_TOKEN }} -t my-container .
+          docker build --build-arg GITHUB_USER=venkyy8 --build-arg PASSWORD1_TOKEN=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 -t my-container .
 
       # Step 5: Run the Docker container
       - name: Run Docker Container
