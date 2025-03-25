@@ -49,7 +49,8 @@ jobs:
           RUN git commit -m "Updated sample.txt with new data"
           RUN git push --set-upstream origin ${NEW_BRANCH}
 
-          CMD ["bash"]
+          # Ensure the container doesn't stop immediately
+          CMD ["tail", "-f", "/dev/null"]
           EOF
 
       # Step 3: Set up Docker
@@ -66,12 +67,12 @@ jobs:
         run: |
           docker run --name my-container-instance -d my-container
 
-      # Step 6: Wait for the Docker container to be ready (ensure repository cloning completed)
-      - name: Wait for container to be ready
+      # Step 6: Wait for the container to be fully ready (cloning repository, setting up)
+      - name: Wait for the container to be ready
         run: |
-          sleep 10  # Adjust time based on your container's startup time
+          sleep 20  # Adjust time based on the process time
 
-      # Step 7: Install GitHub CLI
+      # Step 7: Install GitHub CLI in the GitHub runner
       - name: Install GitHub CLI
         run: |
           sudo apt-get update
@@ -87,12 +88,13 @@ jobs:
       - name: Create Pull Request
         run: |
           docker exec my-container-instance bash -c "cd /app/repository && gh pr create --title '1st-PR' --body '@yvsr please review and merge' --base main --head $NEW_BRANCH"  # Ensure we're in the Git repository and run the PR command
-          echo "PR Created: $PR_URL"
+          echo "PR Created"
 
       # Step 10: Add Reviewer to the PR
       - name: Add Reviewer to the PR
         run: |
-          docker exec my-container-instance bash -c "gh pr edit $PR_URL --add-reviewer kasirao750"
+          docker exec my-container-instance bash -c "gh pr edit --add-reviewer kasirao750"
+          echo "Reviewer added"
 
       # Step 11: Clean up: Stop and remove the container
       - name: Clean up
