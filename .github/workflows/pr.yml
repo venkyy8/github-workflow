@@ -1,4 +1,4 @@
-name: Clone Repo, Modify File, Create Branch and Push Changes
+name: Clone Repo, Modify File, Create Branch, Push Changes, and Create PR
 
 on:
   push:
@@ -6,14 +6,16 @@ on:
       - main  # Adjust to your branch if needed
 
 jobs:
-  clone-modify-push:
+  clone-modify-push-pr:
     runs-on: ubuntu-latest
     steps:
+    
       # Step 1: Set up the GitHub username and token directly in the script
       - name: Set up environment variables for Git authentication
         run: |
           echo "GITHUB_USER=venkyy8" >> $GITHUB_ENV
           echo "PASSWORD1_TOKEN=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" >> $GITHUB_ENV
+          echo "NEW_BRANCH=new-branch2" >> $GITHUB_ENV
 
       # Step 2: Create Dockerfile
       - name: Create Dockerfile
@@ -22,8 +24,9 @@ jobs:
           FROM ubuntu:20.04
           ARG GITHUB_USER
           ARG PASSWORD1_TOKEN
+          ARG NEW_BRANCH
           WORKDIR /app
-          RUN apt-get update && apt-get install -y git
+          RUN apt-get update && apt-get install -y git curl
 
           # Configure the GitHub token-based authentication for Git
           RUN git config --global credential.helper store
@@ -34,17 +37,17 @@ jobs:
           WORKDIR /app/repository
 
           # Create a new branch
-          RUN git checkout -b new-branch1
+          RUN git checkout -b ${NEW_BRANCH}
 
           # Modify the sample.txt file
-          RUN echo "New data added tttt" >> sample.txt
+          RUN echo "New1 data added to sample.txt" >> sample.txt
 
           # Commit and push changes to the new branch
           RUN git config --global user.name "GitHub Actions"
           RUN git config --global user.email "actions@github.com"
           RUN git add sample.txt
           RUN git commit -m "Updated sample.txt with new data"
-          RUN git push --set-upstream origin new-branch1
+          RUN git push --set-upstream origin ${NEW_BRANCH}
 
           CMD ["bash"]
           EOF
@@ -56,14 +59,40 @@ jobs:
       # Step 4: Build the Docker image with build arguments for authentication
       - name: Build Docker Image
         run: |
-          docker build --build-arg GITHUB_USER=venkyy8 --build-arg PASSWORD1_TOKEN=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 -t my-container .
+          docker build --build-arg GITHUB_USER=venkyy8 --build-arg PASSWORD1_TOKEN=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 --build-arg NEW_BRANCH=new-branch2 -t my-container .
 
       # Step 5: Run the Docker container
       - name: Run Docker Container
         run: |
           docker run --name my-container-instance -d my-container
 
-      # Step 6: Clean up: Stop and remove the container
+      # Step 6: Install GitHub CLI
+      - name: Install GitHub CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gh
+          gh --version  # Print the version for debugging
+
+      # Step 7: Authenticate GitHub CLI using the provided token
+      - name: Authenticate GitHub CLI
+        run: |
+          gh auth login --with-token <<< "${{ secrets.PASSWORD1_TOKEN }}"  # Use your custom token for authentication
+
+      # Step 8: Create the Pull Request
+      - name: Create Pull Request
+        run: |
+          PR_URL=$(gh pr create --title "1st-PR" \
+                                 --body "@yvsr please review and merge" \
+                                 --base main \
+                                 --head "$NEW_BRANCH")  # Ensure the branch name is quoted 
+          echo "PR Created: $PR_URL"
+
+      # Step 9: Add Reviewer to the PR
+      - name: Add Reviewer to the PR
+        run: |
+          gh pr edit $PR_URL --add-reviewer kasirao750
+
+      # Step 10: Clean up: Stop and remove the container
       - name: Clean up
         run: |
           docker stop my-container-instance
