@@ -9,14 +9,25 @@ jobs:
   clone-repo:
     runs-on: ubuntu-latest
     steps:
+      # Step 1: Set up environment variables for Git authentication
+      - name: Set up environment variables for Git authentication
+        run: |
+          echo "GITHUB_USER=venkyy8" >> $GITHUB_ENV
+        env:
+          PASSWORD1_TOKEN: ${{ secrets.PASSWORD1_TOKEN }}
+
+      # Step 2: Create Dockerfile
       - name: Create Dockerfile
         run: |
           cat <<EOF > Dockerfile
           FROM ubuntu:20.04
           WORKDIR /app
           RUN apt-get update && apt-get install -y git
-          RUN git clone https://github.com/venkyy8/amd-yvsr.git /app/
-          RUN ls -al
+
+          # Clone repository using GitHub token for authentication
+          RUN git clone https://$GITHUB_USER:$PASSWORD1_TOKEN@github.com/venkyy8/amd-yvsr.git /app/repository
+          RUN ls -al /app/repository
+
           CMD ["bash"]
           EOF
 
@@ -24,15 +35,20 @@ jobs:
       - name: Set up Docker
         uses: docker/setup-buildx-action@v2
 
-      # Step 4: Build and run the Docker container from the dynamically created Dockerfile
-      - name: Build and Run Docker Container
+      # Step 4: Build the Docker image
+      - name: Build Docker Image
         run: |
           docker build -t my-container .
 
-          # Run the Docker container in detached mode
-          docker run --name my-container-instance -d my-container
+      # Step 5: Run the Docker container, passing environment variables for authentication
+      - name: Run Docker Container
+        run: |
+          docker run --name my-container-instance -d \
+            -e GITHUB_USER=venkyy8 \
+            -e PASSWORD1_TOKEN=${{ secrets.PASSWORD1_TOKEN }} \
+            my-container
 
-      # Step 5: Clean up: Stop and remove the container
+      # Step 6: Clean up: Stop and remove the container
       - name: Clean up
         run: |
           docker stop my-container-instance
