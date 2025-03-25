@@ -1,0 +1,39 @@
+name: Clone Repo Inside Docker
+
+on:
+  push:
+    branches:
+      - main  # Adjust to your branch if needed
+
+jobs:
+  clone-repo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Dockerfile
+        run: |
+          cat <<EOF > Dockerfile
+          FROM ubuntu:20.04
+          WORKDIR /app
+          RUN apt-get update && apt-get install -y git
+          RUN git clone https://github.com/venkyy8/amd-yvsr.git /app/
+          RUN ls -al
+          CMD ["bash"]
+          EOF
+
+      # Step 3: Set up Docker
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+
+      # Step 4: Build and run the Docker container from the dynamically created Dockerfile
+      - name: Build and Run Docker Container
+        run: |
+          docker build -t my-container .
+
+          # Run the Docker container in detached mode
+          docker run --name my-container-instance -d my-container
+
+      # Step 5: Clean up: Stop and remove the container
+      - name: Clean up
+        run: |
+          docker stop my-container-instance
+          docker rm my-container-instance
