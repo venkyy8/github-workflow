@@ -9,7 +9,7 @@ jobs:
   clone-modify-push-pr:
     runs-on: ubuntu-latest
     steps:
-    
+
       # Step 1: Set up the GitHub username and token directly in the script
       - name: Set up environment variables for Git authentication
         run: |
@@ -66,34 +66,35 @@ jobs:
         run: |
           docker run --name my-container-instance -d my-container
 
-      # Step 6: Install GitHub CLI
+      # Step 6: Wait for the Docker container to be ready (ensure repository cloning completed)
+      - name: Wait for container to be ready
+        run: |
+          sleep 10  # Adjust time based on your container's startup time
+
+      # Step 7: Install GitHub CLI
       - name: Install GitHub CLI
         run: |
           sudo apt-get update
           sudo apt-get install -y gh
           gh --version  # Print the version for debugging
 
-      # Step 7: Authenticate GitHub CLI using the provided token
+      # Step 8: Authenticate GitHub CLI using the provided token
       - name: Authenticate GitHub CLI
         run: |
           gh auth login --with-token <<< "${{ secrets.PASSWORD1_TOKEN }}"  # Use your custom token for authentication
 
-      # Step 8: Create the Pull Request (ensure we're in the correct directory)
+      # Step 9: Create the Pull Request (ensure we're in the correct directory)
       - name: Create Pull Request
         run: |
-          cd /app/repository  # Ensure we're in the Git repository
-          PR_URL=$(gh pr create --title "1st-PR" \
-                                 --body "@yvsr please review and merge" \
-                                 --base main \
-                                 --head "$NEW_BRANCH")  # Ensure the branch name is quoted 
+          docker exec my-container-instance bash -c "cd /app/repository && gh pr create --title '1st-PR' --body '@yvsr please review and merge' --base main --head $NEW_BRANCH"  # Ensure we're in the Git repository and run the PR command
           echo "PR Created: $PR_URL"
 
-      # Step 9: Add Reviewer to the PR
+      # Step 10: Add Reviewer to the PR
       - name: Add Reviewer to the PR
         run: |
-          gh pr edit $PR_URL --add-reviewer kasirao750
+          docker exec my-container-instance bash -c "gh pr edit $PR_URL --add-reviewer kasirao750"
 
-      # Step 10: Clean up: Stop and remove the container
+      # Step 11: Clean up: Stop and remove the container
       - name: Clean up
         run: |
           docker stop my-container-instance
