@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      # Step 1: Set up the GitHub username and token directly in the script
+      # Step 1: Set up environment variables for Git authentication
       - name: Set up environment variables for Git authentication
         run: |
           echo "GITHUB_USER=venkyy8" >> $GITHUB_ENV
@@ -26,30 +26,31 @@ jobs:
           ARG PASSWORD1_TOKEN
           ARG NEW_BRANCH
           WORKDIR /app
-          RUN apt-get update && apt-get install -y git curl
 
-          # Configure the GitHub token-based authentication for Git
+          # Install dependencies including Git, curl, and GitHub CLI
+          RUN apt-get update && apt-get install -y git curl lsb-release
+          RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | tee /usr/share/keyrings/githubcli-archive-keyring.gpg > /dev/null
+          RUN echo "deb [signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list
+          RUN apt-get update && apt-get install gh
+
+          # Configure git credentials
           RUN git config --global credential.helper store
           RUN echo "https://${GITHUB_USER}:${PASSWORD1_TOKEN}@github.com" > ~/.git-credentials
 
-          # Clone repository
+          # Clone the repository and setup the branch
           RUN git clone https://github.com/venkyy8/amd-yvsr.git /app/repository
           WORKDIR /app/repository
-
-          # Create a new branch
           RUN git checkout -b ${NEW_BRANCH}
 
-          # Modify the sample.txt file
+          # Modify the file and commit changes
           RUN echo "New data added to sample.txt" >> sample.txt
-
-          # Commit and push changes to the new branch
           RUN git config --global user.name "GitHub Actions"
           RUN git config --global user.email "actions@github.com"
           RUN git add sample.txt
           RUN git commit -m "Updated sample.txt with new data"
           RUN git push --set-upstream origin ${NEW_BRANCH}
 
-          # Ensure the container doesn't stop immediately
+          # Keep the container running
           CMD ["tail", "-f", "/dev/null"]
           EOF
 
@@ -67,36 +68,29 @@ jobs:
         run: |
           docker run --name my-container-instance -d my-container
 
-      # Step 6: Wait for the container to be fully ready (cloning repository, setting up)
+      # Step 6: Wait for the container to be fully set up
       - name: Wait for the container to be ready
         run: |
-          sleep 20  # Adjust time based on the process time
+          sleep 20  # Adjust time as needed
 
-      # Step 7: Install GitHub CLI in the GitHub runner
-      - name: Install GitHub CLI
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gh
-          gh --version  # Print the version for debugging
-
-      # Step 8: Authenticate GitHub CLI using the provided token
+      # Step 7: Authenticate GitHub CLI
       - name: Authenticate GitHub CLI
         run: |
-          gh auth login --with-token <<< "${{ secrets.PASSWORD1_TOKEN }}"  # Use your custom token for authentication
+          docker exec my-container-instance bash -c "gh auth login --with-token <<< '${{ secrets.PASSWORD1_TOKEN }}'"
 
-      # Step 9: Create the Pull Request (ensure we're in the correct directory)
+      # Step 8: Create the Pull Request
       - name: Create Pull Request
         run: |
-          docker exec my-container-instance bash -c "cd /app/repository && gh pr create --title '1st-PR' --body '@yvsr please review and merge' --base main --head $NEW_BRANCH"  # Ensure we're in the Git repository and run the PR command
+          docker exec my-container-instance bash -c "cd /app/repository && gh pr create --title '1st-PR' --body '@yvsr please review and merge' --base main --head $NEW_BRANCH"
           echo "PR Created"
 
-      # Step 10: Add Reviewer to the PR
+      # Step 9: Add Reviewer to the PR
       - name: Add Reviewer to the PR
         run: |
           docker exec my-container-instance bash -c "gh pr edit --add-reviewer kasirao750"
           echo "Reviewer added"
 
-      # Step 11: Clean up: Stop and remove the container
+      # Step 10: Clean up: Stop and remove the container
       - name: Clean up
         run: |
           docker stop my-container-instance
