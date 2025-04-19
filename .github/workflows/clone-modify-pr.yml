@@ -13,4 +13,9 @@ jobs:
     steps:
       - name: Call reusable workflow
         uses: venkyy8/action-repo@main
+        
+      - name: Show current directory and files
+        run: |
+          pwd
+          ls -al
 
