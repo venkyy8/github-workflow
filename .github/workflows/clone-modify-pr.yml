@@ -1,4 +1,4 @@
-name: Print Job Status, Workflow Name, Run ID, and Repository Name
+name: testing Workflow
 
 on:
   push:
@@ -25,3 +25,7 @@ jobs:
       - name: Print Repository Name
         run: |
           echo "Repository Name: ${{ github.repository }}"
+          
+      - name: Print Workflow URL
+        run: |
+          echo "Workflow URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
