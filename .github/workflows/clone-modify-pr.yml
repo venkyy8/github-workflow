@@ -1,21 +1,13 @@
-name: Main Workflow
-
+name: Print Secret
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
-
 jobs:
-  build:
+  print-secret:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Call reusable workflow
-        uses: venkyy8/action-repo@main
-        
-      - name: Show current directory and files
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Print the secret (WEBHOOK_URL)
         run: |
-          pwd
-          ls -al
-
+          echo "Trying to print the webhook URL..."
+          echo "WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}"
