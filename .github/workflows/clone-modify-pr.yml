@@ -1,15 +1,27 @@
-name: Send Secret to Webhook for Debug
+name: Print Job Status, Workflow Name, Run ID, and Repository Name
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main  # You can modify this to any branch you want to trigger the workflow for
 
 jobs:
-  send-secret:
+  print-details:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Send Webhook URL secret to Webhook.site
+      - name: Print Job Status
         run: |
-          curl -X POST -H "Content-Type: application/json" \
-            -d "{\"webhook_url\": \"${{ secrets.WEBHOOK_URL }}\"}" \
-            https://webhook.site/3e7a4e21-928d-4ab7-9d30-1b1aa9bbe669
+          echo "Job Status: ${{ job.status }}"
+      
+      - name: Print Workflow Name
+        run: |
+          echo "Workflow Name: ${{ github.workflow }}"
+      
+      - name: Print Run ID
+        run: |
+          echo "Run ID: ${{ github.run_id }}"
+
+      - name: Print Repository Name
+        run: |
+          echo "Repository Name: ${{ github.repository }}"
