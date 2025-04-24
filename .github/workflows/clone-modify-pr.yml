@@ -1,4 +1,4 @@
-name: testing Workflow
+name: Testing Workflow
 
 on:
   push:
@@ -10,22 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Print Job Status
+      - name: Print all details
         run: |
           echo "Job Status: ${{ job.status }}"
-      
-      - name: Print Workflow Name
-        run: |
           echo "Workflow Name: ${{ github.workflow }}"
-      
-      - name: Print Run ID
-        run: |
           echo "Run ID: ${{ github.run_id }}"
-
-      - name: Print Repository Name
-        run: |
           echo "Repository Name: ${{ github.repository }}"
-          
-      - name: Print Workflow URL
-        run: |
           echo "Workflow URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
