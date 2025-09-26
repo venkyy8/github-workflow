@@ -1,0 +1,27 @@
+name: Trigger Maven Build in Repo C
+
+on:
+  workflow_call:
+    inputs:
+      APT_UPDATE_CMD:
+        required: true
+        type: string
+      APT_INSTALL_MAVEN_CMD:
+        required: true
+        type: string
+      PROJECT_DIR:
+        required: true
+        type: string
+      MAVEN_GOAL:
+        required: true
+        type: string
+
+jobs:
+  trigger-repo-c:
+    uses: venkyy8/action-repo/build.yml@main
+    with:
+      APT_UPDATE_CMD: ${{ inputs.APT_UPDATE_CMD }}
+      APT_INSTALL_MAVEN_CMD: ${{ inputs.APT_INSTALL_MAVEN_CMD }}
+      PROJECT_DIR: ${{ inputs.PROJECT_DIR }}
+      MAVEN_GOAL: ${{ inputs.MAVEN_GOAL }}
+
